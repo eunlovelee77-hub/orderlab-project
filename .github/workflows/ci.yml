@@ -27,5 +27,13 @@ jobs:
       - name: 코드 모양 검사
         run: python -m ruff format --check .
 
-      - name: 계산 테스트
-        run: python -m pytest -q
+      - name: 테스트와 커버리지 측정
+        run: python -m pytest --cov=orderlab --cov-report=term-missing --cov-report=xml
+
+      - name: 커버리지 보고서 보관
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: ignore
