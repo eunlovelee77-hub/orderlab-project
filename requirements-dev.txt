@@ -2,4 +2,4 @@ ruff
 pytest
 pytest-cov
 fastapi
-httpx
+httpx2
