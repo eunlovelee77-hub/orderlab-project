@@ -38,3 +38,35 @@ jobs:
           name: coverage-${{ matrix.os }}
           path: coverage.xml
           if-no-files-found: ignore
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+
+      - name: 보고서 생성
+        run: python generate_report.py
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+      - name: 웹페이지 배포
+        id: deployment
+        uses: actions/deploy-pages@v4
